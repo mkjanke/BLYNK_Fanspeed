@@ -1,0 +1,14 @@
+{
+	"folders": [
+		{
+			"name": "Fanspeed",
+			"path": "."
+		}
+	],
+	"settings": {},
+	"extensions": {
+		"recommendations": [
+			"platformio.platformio-ide"
+		]
+	}
+}
