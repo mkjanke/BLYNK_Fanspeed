@@ -1,4 +1,4 @@
-# BLYNK_Fanspeed
+# BLYNK Fanspeed
 
 Wemos Mini D1 Fan speed controler
 
