@@ -7,10 +7,12 @@ Reads DHT11 temperature probe and sets computer fan speed using PWM motor contro
 Upload temperature data to Blynk if Wifi connected.
 
 Inspiration and sample code from Everlanders:
-      https://youtu.be/aS3BiYaEfiw
+
+https://youtu.be/aS3BiYaEfiw
       https://youtu.be/KX67lBrizPg
 
 Blynk reconnection logic via:
+
 https://community.blynk.cc/t/c-blynk-legacy-code-examples-for-basic-tasks/22596/20
 
 ## Libraries:
