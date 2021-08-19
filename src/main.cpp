@@ -4,7 +4,7 @@
 //    based on temperature
 //    using PWM motor controller
 //
-// Upload temp data to Blynk if Wifi connected.
+// Upload temperature data to Blynk if Wifi connected.
 //
 // Inspiration and sample code from Everlanders:
 //      https://youtu.be/aS3BiYaEfiw
@@ -15,12 +15,12 @@
 //
 // Libraries:
 //    Arduino OTA
-//    Blynk libraries Version >= 1.0.1
+//    Blynk library Version >= 1.0.1
 //    Adafruit DHT Sensor Library
 //
 // To get started:
-//    Rename setup.h.dist to setup.h 
-//    Set WiFi and Blynk parameter in setup.h
+//    Rename settings.h.default to settings.h 
+//    Edit WiFi and Blynk parameters in settings.h
 
 #include "fanspeed.h"
 

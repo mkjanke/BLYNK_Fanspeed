@@ -37,7 +37,16 @@
 // Needed by Blynk OTA (not implemented)
 // Also used by terminal widget
 // Set this define to whatever you want
-#define BLYNK_FIRMWARE_VERSION        "0.1.8"
+#define BLYNK_FIRMWARE_VERSION        "0.1.9"
 
 #define MY_BLYNK_HEARTBEAT   10000L //How often to update Uptine in Blynk (millseconds)
 
+// Blynk Vpin assigments
+
+//  V0  Uptime/Heartbeat (String)
+//  V1  DHT11 Temperature (Double, Degrees F)
+//  V2  DHT11 Humidity (Double, Min 0 Max 100)
+//  V3  Unused
+//  V4  Fan speed override (Integer, Min 0 Max 1)
+//  V5  Blynk Terminal Widget
+//  V6  Fan Speed (Integer, Percent, Min 0 Max 100)
