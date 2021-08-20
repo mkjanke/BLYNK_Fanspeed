@@ -33,3 +33,6 @@ Blynk reconnection logic via:
       V4  Fan speed override (Integer, Min 0 Max 1)
       V5  Blynk Terminal Widget
       V6  Fan Speed (Integer, Percent, Min 0 Max 100)
+      V7  Fan Start Temperature
+      V8  Fan minimum speed at Start Tempurature
+      V9  Fan Max Temp - temp at which fan runns 100%
