@@ -41,8 +41,15 @@ DHT dht(DHTPIN, DHTTYPE);
 // Global vars for current temperature & humidity, updated by timers
 float dhtTemp = 0.0;
 float dhtHumidity = 0.0;
-int fanSpeed = PWM_WRITE_RANGE; //Start fan at max speed
-int fanOverride = 0;
+
+// Defaults for fan settings
+// Overriden by Blynk Vpins
+int fanSpeed = PWM_WRITE_RANGE;     //Start fan at max speed
+int fanOverride = 0;                // Blynk Vpin V6
+int fanStartTemp = FAN_START_TEMP;  // Blynk Vpin V7
+int pwmLowSpeed = PWM_LOW_SPEED;    // Blynk Vpin V8
+int fanMaxTemp = FAN_MAX_TEMP;      // Blynk Vpin V9
+int pwmHighSpeed = PWM_WRITE_RANGE; // Max fan speed (= 100)
 
 //Set up Blynk Timer and terminal widget
 BlynkTimer timer;
@@ -56,6 +63,10 @@ int ReCnctCount = 0;  // Reconnection counter
 BLYNK_CONNECTED() {
   // Request the latest state from the server
   Blynk.syncVirtual(V4);
+  Blynk.syncVirtual(V7); // Fan start temperature
+  Blynk.syncVirtual(V8); // Fan Minimum Speed (10 - 100)
+  Blynk.syncVirtual(V9); // Fan max temperature 
+  
   ReCnctCount = 0;
 }
 
@@ -64,9 +75,10 @@ BLYNK_WRITE(V3) //Unused slider
   // int pinValue = param.asInt(); // assigning incoming value from pin V3 to a time interval
 }
 
-BLYNK_WRITE(V4) //Manual Fan Override
+// Manual override - Reads V4 from Blynk app. If '1' then fan will run at 100%
+BLYNK_WRITE(V4)
 {
-  fanOverride = param.asInt(); // Reads V4 from Blynk app. If '1' then fan will run at 100%
+  fanOverride = param.asInt(); 
 }
 
 BLYNK_WRITE(V5) //Blynk Terminal widget
@@ -81,6 +93,24 @@ BLYNK_WRITE(V5) //Blynk Terminal widget
     blynkTerminal.println(F("Type '?' to dump status"));
     blynkTerminal.flush();
   }
+}
+
+// Reads V7 from Blynk app. Sets/overrides Temp at which fan will start
+BLYNK_WRITE(V7)
+{
+  fanStartTemp = (param.asInt() <= fanMaxTemp) ? param.asInt() : fanMaxTemp; 
+}
+
+// Reads V8 from Blynk app. Sets/overrides fan low speed
+BLYNK_WRITE(V8)
+{
+  pwmLowSpeed = (param.asInt() <= pwmHighSpeed) ? param.asInt() : pwmHighSpeed; 
+}
+
+// Reads V9 from Blynk app. Sets/overrides temp at which fan will reach max speed
+BLYNK_WRITE(V9)
+{
+  fanMaxTemp = (param.asInt() >= fanStartTemp) ? param.asInt() : fanMaxTemp;
 }
 
 void setup()
@@ -191,7 +221,7 @@ void dht11Read()
   {
     blynkTerminal.println(F("Failed to read from DHT sensor!"));
     blynkTerminal.flush();
-    fanSpeed = PWM_WRITE_RANGE; //If invalid temp, run fan at tull speed
+    fanSpeed = PWM_WRITE_RANGE; //If invalid temp, run fan at full speed
   }
   else 
   {
@@ -200,14 +230,14 @@ void dht11Read()
     Blynk.virtualWrite(V1, dhtTemp);
     Blynk.virtualWrite(V2, dhtHumidity);
 
-    if (dhtTemp < FAN_START_TEMP)
+    if (dhtTemp < fanStartTemp)
       fanSpeed = 0;
     else
-      if (dhtTemp > FAN_MAX_TEMP)
-        fanSpeed = PWM_WRITE_RANGE;
+      if (dhtTemp > fanMaxTemp)
+        fanSpeed = pwmHighSpeed;
       else
         // Linear fan speed. I.E 75F to 90F will result in fan speed from 40% to 100%
-        fanSpeed = map(dhtTemp, FAN_START_TEMP, FAN_MAX_TEMP, PWM_LOW_SPEED, PWM_WRITE_RANGE);
+        fanSpeed = map(dhtTemp, fanStartTemp, fanMaxTemp, pwmLowSpeed, pwmHighSpeed);
   }
   controlFanSpeed(fanSpeed);
   dumpSensorStatus();

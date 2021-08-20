@@ -10,13 +10,16 @@
 #define DHTPIN  5                // Digital pin connected to the DHT sensor
 #define DHTTYPE DHT11            // Sensor type DHT 11
 #define DHT_READ_INTERVAL 10000L // How often to read in milliseconds
-#define DHT_TEMP_F true          // Set to True for Farenheight, false for Celcius
+#define DHT_TEMP_F true          // Set to True for Fahrenheit, false for Celsius
 
-// PWM parameters
+// Default PWM parameters
 // Linear fan speed. I.E 75F to 90F will result in fan speed from 40% to 100% of max RPM
-#define FAN_START_TEMP  75       // Temp at which to turn on fan at low speed
-#define FAN_MAX_TEMP    90       // Temp above which fan will run at 100%
-#define PWM_LOW_SPEED   40       // PWM pulse width at minimum fan speed - must be less that PWM_WRITE_RANGE)
+// Overriden by Blynk VPins
+#define FAN_START_TEMP  75       // Temp at which to turn on fan at low speed - Blynk Vpin V7
+#define FAN_MAX_TEMP    90       // Temp above which fan will run at 100% - Blynk Vpin V7
+#define PWM_LOW_SPEED   40       // PWM pulse width at minimum fan speed  - Blynk Vpin V7
+                                 //     - must be less that PWM_WRITE_RANGE)
+// Fixed PWM parameters
 #define PWM_WRITE_RANGE 100      // Maximum value when PWM is fully 'ON'. Sets PWM range. For 0-100, set to '100'
 #define PWM_FREQUENCY   20000    // How often PWM cycles on & off Set high enough that you don't hear fan pulses
 
@@ -37,7 +40,7 @@
 // Needed by Blynk OTA (not implemented)
 // Also used by terminal widget
 // Set this define to whatever you want
-#define BLYNK_FIRMWARE_VERSION        "0.1.9"
+#define BLYNK_FIRMWARE_VERSION        "0.2.0"
 
 #define MY_BLYNK_HEARTBEAT   10000L //How often to update Uptine in Blynk (millseconds)
 
