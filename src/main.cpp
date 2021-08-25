@@ -50,6 +50,7 @@ int fanStartTemp = FAN_START_TEMP;  // Blynk Vpin V7
 int pwmLowSpeed = PWM_LOW_SPEED;    // Blynk Vpin V8
 int fanMaxTemp = FAN_MAX_TEMP;      // Blynk Vpin V9
 int pwmHighSpeed = PWM_WRITE_RANGE; // Max fan speed (= 100)
+int relayOut = HIGH;
 
 //Set up Blynk Timer and terminal widget
 BlynkTimer timer;
@@ -70,15 +71,19 @@ BLYNK_CONNECTED() {
   ReCnctCount = 0;
 }
 
-BLYNK_WRITE(V3) //Unused slider
+//D7 output. Set HIGH to close relay
+BLYNK_WRITE(V3)
 {
-  // int pinValue = param.asInt(); // assigning incoming value from pin V3 to a time interval
+  int relayOut = param.asInt();
+  digitalWrite(RELAY_OUT, relayOut);  // Should toggle relay
 }
 
 // Manual override - Reads V4 from Blynk app. If '1' then fan will run at 100%
 BLYNK_WRITE(V4)
 {
-  fanOverride = param.asInt(); 
+  fanOverride = param.asInt();
+  calcFanSpeed();
+  controlFanSpeed(fanSpeed); 
 }
 
 BLYNK_WRITE(V5) //Blynk Terminal widget
@@ -99,18 +104,24 @@ BLYNK_WRITE(V5) //Blynk Terminal widget
 BLYNK_WRITE(V7)
 {
   fanStartTemp = (param.asInt() <= fanMaxTemp) ? param.asInt() : fanMaxTemp; 
+  calcFanSpeed();
+  controlFanSpeed(fanSpeed);   
 }
 
 // Reads V8 from Blynk app. Sets/overrides fan low speed
 BLYNK_WRITE(V8)
 {
   pwmLowSpeed = (param.asInt() <= pwmHighSpeed) ? param.asInt() : pwmHighSpeed; 
+  calcFanSpeed();
+  controlFanSpeed(fanSpeed);
 }
 
 // Reads V9 from Blynk app. Sets/overrides temp at which fan will reach max speed
 BLYNK_WRITE(V9)
 {
   fanMaxTemp = (param.asInt() >= fanStartTemp) ? param.asInt() : fanMaxTemp;
+  calcFanSpeed();
+  controlFanSpeed(fanSpeed); 
 }
 
 void setup()
@@ -118,8 +129,10 @@ void setup()
   // Debug console
   Serial.begin(9600);
 
-  // Onboard LED
   pinMode(LED_BUILTIN, OUTPUT);
+  pinMode(RELAY_OUT, OUTPUT);
+  digitalWrite(RELAY_OUT, HIGH);  //Set relay pin high to hold relay open
+
   timer.setInterval(LED_HEARTBEAT, toggleLed);
 
   // Set up PWM for fan control
@@ -229,18 +242,23 @@ void dht11Read()
     dhtHumidity = newH;
     Blynk.virtualWrite(V1, dhtTemp);
     Blynk.virtualWrite(V2, dhtHumidity);
+    calcFanSpeed();
 
-    if (dhtTemp < fanStartTemp)
-      fanSpeed = 0;
-    else
-      if (dhtTemp > fanMaxTemp)
-        fanSpeed = pwmHighSpeed;
-      else
-        // Linear fan speed. I.E 75F to 90F will result in fan speed from 40% to 100%
-        fanSpeed = map(dhtTemp, fanStartTemp, fanMaxTemp, pwmLowSpeed, pwmHighSpeed);
   }
   controlFanSpeed(fanSpeed);
-  dumpSensorStatus();
+  // dumpSensorStatus();
+}
+
+// Calc fan speed based on current temp and fan parameters.
+void calcFanSpeed(){
+  if (dhtTemp < fanStartTemp)
+    fanSpeed = 0;
+  else
+    if (dhtTemp > fanMaxTemp)
+      fanSpeed = pwmHighSpeed;
+    else
+      // Linear fan speed. I.E 75F to 90F will result in fan speed from 40% to 100%
+      fanSpeed = map(dhtTemp, fanStartTemp, fanMaxTemp, pwmLowSpeed, pwmHighSpeed);
 }
 
 // Output device status to Blynk terminal widget

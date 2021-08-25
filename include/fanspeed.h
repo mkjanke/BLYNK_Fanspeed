@@ -17,12 +17,13 @@
 #include <BlynkSimpleEsp8266.h>
 
 // Function prototypes
-void dht11Read();       //Read Temp sensor & update Blynk
-void toggleLed();       // Toggle LED
-void heartBeat();       // Update Blynk with heartbeat message
-void dumpESPStatus();      //Dump ESP8266 status to terminal window
-void dumpSensorStatus();      //Dump Sensor status to terminal window
+void dht11Read();               //Read Temp sensor & update Blynk
+void toggleLed();               // Toggle LED
+void heartBeat();               // Update Blynk with heartbeat message
+void dumpESPStatus();           //Dump ESP8266 status to terminal window
+void dumpSensorStatus();        //Dump Sensor status to terminal window
 void controlFanSpeed(int percent); 
+void calcFanSpeed();
 
 //So ESP.getVCC() reads correct voltage
 ADC_MODE(ADC_VCC);
