@@ -137,7 +137,7 @@ void setup()
 
   // Set up PWM for fan control
   analogWriteRange(PWM_WRITE_RANGE);      //Fan range 0-100
-  analogWriteResolution(PWM_FREQUENCY);   //Set PWN frequency
+  analogWriteFreq(PWM_FREQUENCY);         //Set PWN frequency
   digitalWrite(MOTOR_IN1, HIGH);          //Start with fan on high
 
   // PWM Fan control pins
@@ -243,7 +243,6 @@ void dht11Read()
     Blynk.virtualWrite(V1, dhtTemp);
     Blynk.virtualWrite(V2, dhtHumidity);
     calcFanSpeed();
-
   }
   controlFanSpeed(fanSpeed);
   // dumpSensorStatus();

@@ -40,7 +40,7 @@
 // Needed by Blynk OTA (not implemented)
 // Also used by terminal widget
 // Set this define to whatever you want
-#define BLYNK_FIRMWARE_VERSION        "0.2.0"
+#define BLYNK_FIRMWARE_VERSION        "0.3.0"
 
 #define MY_BLYNK_HEARTBEAT   10000L //How often to update Uptine in Blynk (millseconds)
 
@@ -53,3 +53,6 @@
 //  V4  Fan speed override (Integer, Min 0 Max 1)
 //  V5  Blynk Terminal Widget
 //  V6  Fan Speed (Integer, Percent, Min 0 Max 100)
+//  V7  Fan Low Temp Threshold
+//  V8  Fan minimum speed
+//  V9  Fan High Temp limit
